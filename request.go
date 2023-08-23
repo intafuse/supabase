@@ -3,7 +3,6 @@ package supabase
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 )
 
@@ -49,8 +48,6 @@ func (c *Client) sendCustomRequest(req *http.Request, successValue interface{}, 
 
 		return false, fmt.Errorf("unknown, status code: %d", res.StatusCode)
 	} else if res.StatusCode != http.StatusNoContent {
-		a, _ := io.ReadAll(res.Body)
-		fmt.Println(string(a))
 		if err = json.NewDecoder(res.Body).Decode(&successValue); err != nil {
 			return false, err
 		}
