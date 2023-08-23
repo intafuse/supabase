@@ -1,6 +1,6 @@
 # supabase
 
-Unofficial [Supabase](https://supabase.io) auth-client for Go. A simple and dependency free API wrapper for handling authentication.
+Unofficial [supabase](https://supabase.io) auth-client for Go. A simple and dependency free API wrapper for handling authentication.
 
 ## Installation
 
