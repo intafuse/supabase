@@ -26,7 +26,7 @@ import (
 func main() {
   supabaseUrl := "<SUPABASE-URL>"
   supabaseKey := "<SUPABASE-KEY>"
-  supa := supabase.CreateClient(supabaseUrl, supabaseKey)
+  supa := supabase.NewClient(supabaseUrl, supabaseKey)
 
   details, err := supa.SignUp(context.Background(), supabase.UserCredentials{
     Email:    "example@example.com",
@@ -55,7 +55,7 @@ import (
 func main() {
   supabaseUrl := "<SUPABASE-URL>"
   supabaseKey := "<SUPABASE-KEY>"
-  supa := supabase.CreateClient(supabaseUrl, supabaseKey)
+  supa := supabase.NewClient(supabaseUrl, supabaseKey)
 
   user, err := supa.SignIn(context.Background(), supa.UserCredentials{
     Email:    "example@example.com",
