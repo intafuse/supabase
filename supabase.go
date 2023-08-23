@@ -63,8 +63,10 @@ func (c *Client) SignUp(ctx context.Context, opts SignUpRequest) (*Authenticated
 		if err != nil {
 			return nil, err
 		}
+
 		body.CodeChallengeMethod = p.ChallengeMethod
 		body.CodeChallenge = p.Challenge
+
 		res.CodeVerifier = p.Verifier
 	}
 
@@ -204,10 +206,7 @@ func (c *Client) SignInWithProvider(opts ProviderSignInRequest) (*Provider, erro
 	params.Set("redirect_to", opts.RedirectTo)
 	params.Set("scopes", strings.Join(opts.Scopes, " "))
 
-	details := Provider{
-		URL:      fmt.Sprintf("%s/%s/authorize?%s", c.BaseURL, AuthEndpoint, params.Encode()),
-		Provider: opts.Provider,
-	}
+	details := Provider{}
 
 	if opts.UsePKCE {
 		p, err := generatePKCEParams()
@@ -220,6 +219,9 @@ func (c *Client) SignInWithProvider(opts ProviderSignInRequest) (*Provider, erro
 
 		details.CodeVerifier = p.Verifier
 	}
+
+	details.URL = fmt.Sprintf("%s/%s/authorize?%s", c.BaseURL, AuthEndpoint, params.Encode())
+	details.Provider = opts.Provider
 
 	return &details, nil
 }
