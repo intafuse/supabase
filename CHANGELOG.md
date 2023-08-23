@@ -1,5 +1,5 @@
 # Changelog
 
-## v1.0.3
+## v1.0.5
 
 Automatic release on pushed tag.
