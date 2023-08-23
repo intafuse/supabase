@@ -10,9 +10,11 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
 
+    permissions:
+      deployments: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Release
         uses: softprops/action-gh-release@v1
