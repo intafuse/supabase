@@ -56,6 +56,8 @@ func (c *Client) SignUp(ctx context.Context, opts SignUpRequest) (*Authenticated
 		MetaData: opts.MetaData,
 	}
 
+	res := Authenticated{}
+
 	if opts.UsePKCE {
 		p, err := generatePKCEParams()
 		if err != nil {
@@ -63,6 +65,7 @@ func (c *Client) SignUp(ctx context.Context, opts SignUpRequest) (*Authenticated
 		}
 		body.CodeChallengeMethod = p.ChallengeMethod
 		body.CodeChallenge = p.Challenge
+		res.CodeVerifier = p.Verifier
 	}
 
 	reqBody, _ := json.Marshal(body)
@@ -72,7 +75,6 @@ func (c *Client) SignUp(ctx context.Context, opts SignUpRequest) (*Authenticated
 		return nil, err
 	}
 
-	res := Authenticated{}
 	req.Header.Set("content-type", "application/json")
 	if err := c.sendRequest(req, &res); err != nil {
 		return nil, err

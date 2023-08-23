@@ -10,6 +10,7 @@ type Authenticated struct {
 	User                 User   `json:"user"`
 	ProviderToken        string `json:"provider_token"`
 	ProviderRefreshToken string `json:"provider_refresh_token"`
+	CodeVerifier         string
 }
 
 type User struct {
