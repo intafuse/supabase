@@ -277,24 +277,47 @@ func (c *Client) UpdateUser(ctx context.Context, userToken string, updateData ma
 }
 
 type ResetPasswordRequest struct {
-	Email      string `json:"email"`
-	RedirectTo string `json:"redirect_to"`
+	Email   string `json:"email"`
+	UsePKCE bool
 }
 
 // ResetPasswordForEmail sends a password recovery link to the given e-mail address.
-func (c *Client) ResetPasswordForEmail(ctx context.Context, opts ResetPasswordRequest) error {
-	reqBody, _ := json.Marshal(opts)
+func (c *Client) ResetPasswordForEmail(ctx context.Context, opts ResetPasswordRequest) (*Authenticated, error) {
+	body := struct {
+		Email               string `json:"email"`
+		CodeChallengeMethod string `json:"code_challenge_method"`
+		CodeChallenge       string `json:"code_challenge"`
+	}{
+		Email: opts.Email,
+	}
+
+	res := Authenticated{}
+
+	if opts.UsePKCE {
+		p, err := generatePKCEParams()
+		if err != nil {
+			return nil, err
+		}
+
+		body.CodeChallengeMethod = p.ChallengeMethod
+		body.CodeChallenge = p.Challenge
+
+		res.CodeVerifier = p.Verifier
+	}
+
+	reqBody, _ := json.Marshal(body)
 	reqURL := fmt.Sprintf("%s/%s/recover", c.BaseURL, AuthEndpoint)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, reqURL, bytes.NewBuffer(reqBody))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if err = c.sendRequest(req, nil); err != nil {
-		return err
+	req.Header.Set("content-type", "application/json")
+	if err := c.sendRequest(req, &res); err != nil {
+		return nil, err
 	}
 
-	return err
+	return &res, err
 }
 
 // SignOut revokes the users token and session.
