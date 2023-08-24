@@ -36,10 +36,11 @@ func NewClient(baseURL string, supabaseKey string) *Client {
 }
 
 type SignUpRequest struct {
-	Email    string
-	Password string
-	MetaData map[string]any
-	UsePKCE  bool
+	Email      string
+	Password   string
+	RedirectTo string
+	MetaData   map[string]any
+	UsePKCE    bool
 }
 
 // SignUp registers the user's email and password to the database.
@@ -47,13 +48,15 @@ func (c *Client) SignUp(ctx context.Context, opts SignUpRequest) (*Authenticated
 	body := struct {
 		Email               string         `json:"email"`
 		Password            string         `json:"password"`
+		RedirectTo          string         `json:"redirect_to"`
 		MetaData            map[string]any `json:"data"`
 		CodeChallengeMethod string         `json:"code_challenge_method"`
 		CodeChallenge       string         `json:"code_challenge"`
 	}{
-		Email:    opts.Email,
-		Password: opts.Password,
-		MetaData: opts.MetaData,
+		Email:      opts.Email,
+		Password:   opts.Password,
+		RedirectTo: opts.RedirectTo,
+		MetaData:   opts.MetaData,
 	}
 
 	res := Authenticated{}
